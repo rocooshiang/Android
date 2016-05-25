@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">CustomQRCodeReader</string>
+    <string name="title_activity_capture_activity_any_orientation">CaptureActivityAnyOrientation
+    </string>
+</resources>
