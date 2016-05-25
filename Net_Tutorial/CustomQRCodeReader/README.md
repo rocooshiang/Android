@@ -1,6 +1,6 @@
 
 # Screenshot
-![Xcode indent settings](https://github.com/rocooshiang/LearningAndroidRecord/blob/master/Screenshot/Image.png)
+![Xcode indent settings](https://github.com/rocooshiang/LearningAndroidRecord/blob/master/Net_Tutorial/CustomQRCodeReader/Screenshot/Image.png)
 
 <br \>
 <br \>
