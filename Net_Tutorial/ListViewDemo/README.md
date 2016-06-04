@@ -22,6 +22,7 @@ Android ListView與iOS UITableView是相同的功能，但是在row layout的重
 ##### UITableView
 會將create過的row丟到一個pool，當要使用時會去pool找一個出來，但是不一定是對應到原來的row，意思就是每次都要在重新設定該row上有用到的property
 
+***Note: 請不要忘記在Manifest加入Internet權限... 我就是忘了加入，然後Picasso又幫你處理掉下載失敗時用替代圖，最後吧啦吧啦~ 兜了一個圈子後發現是最基本的問題(汗***
 <br \>
 <br \>
 
