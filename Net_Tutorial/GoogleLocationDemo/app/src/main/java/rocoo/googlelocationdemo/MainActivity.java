@@ -24,7 +24,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
+
 
 
 import java.text.SimpleDateFormat;
@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements
     private Location mLastLocation;
     private View mLayout;
     private LocationRequest mLocationRequest;
-    private LocationSettingsRequest mLocationSettingsRequest;
 
 
     @Override
@@ -61,8 +60,6 @@ public class MainActivity extends AppCompatActivity implements
         // 建立位置更新的條件
         createLocationRequest();
 
-        // 建立位置設定的需求(將上方的條件當做參數)
-        buildLocationSettingsRequest();
 
     }
 
@@ -128,16 +125,6 @@ public class MainActivity extends AppCompatActivity implements
         // 設定來源給 Google Play services location services
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-    }
-
-    private void buildLocationSettingsRequest(){
-
-        /** 當已連接 Google Play services 和 location services API，就可以開始取得當前位置資訊，
-         * 可以建立 LocationSettingsRequest.Builder，並且加上一或多個需求 **/
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(mLocationRequest);
-        mLocationSettingsRequest = builder.build();
     }
 
 
