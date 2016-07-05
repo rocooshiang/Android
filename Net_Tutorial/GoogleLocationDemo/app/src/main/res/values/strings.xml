@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GoogleLocationDemo</string>
+    <string name="intro_permissions">About permissions</string>
+</resources>
