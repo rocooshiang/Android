@@ -12,3 +12,4 @@
 # Reference
 * [The Ultimate Android Camera Development Guide](https://www.airpair.com/android/android-camera-development)
 * [Android Taking Photos Simply](https://developer.android.com/training/camera/photobasics.html)
+* [Google Sample Android-RuntimePermissions (Github)](https://github.com/googlesamples/android-RuntimePermissions)
