@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
     // For permissions request
     private final int REQUEST_CAMERA_STORAGE = 1;
-
     private final String[] PERMISSION_CAMERA_STORAGE = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
 
