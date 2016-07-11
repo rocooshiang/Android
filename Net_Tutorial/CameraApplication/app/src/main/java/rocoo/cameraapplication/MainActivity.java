@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     // For permissions request
     private final int REQUEST_CAMERA_STORAGE = 1;
 
-    private final String[] CAMERA_STORAGE_PERMISSION = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private final String[] PERMISSION_CAMERA_STORAGE = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
 
     private ImageView fullImageView, thumbnailImageView;
@@ -187,15 +187,15 @@ public class MainActivity extends AppCompatActivity {
     private void checkPermission() {
 
         // 判斷所有權限是否都被允許
-        if (ActivityCompat.checkSelfPermission(this, CAMERA_STORAGE_PERMISSION[0]) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this, CAMERA_STORAGE_PERMISSION[1]) != PackageManager.PERMISSION_GRANTED ) {
+        if (ActivityCompat.checkSelfPermission(this, PERMISSION_CAMERA_STORAGE[0]) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this, PERMISSION_CAMERA_STORAGE[1]) != PackageManager.PERMISSION_GRANTED ) {
 
             /** 沒有權限則顯示視窗告知使用者 **/
 
             // 自訂視窗來解釋為何要有此權限，對使用者有什麼好處
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    CAMERA_STORAGE_PERMISSION[0]) || ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    CAMERA_STORAGE_PERMISSION[1])) {
+                    PERMISSION_CAMERA_STORAGE[0]) || ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    PERMISSION_CAMERA_STORAGE[1])) {
 
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle("權限通知")
@@ -203,14 +203,14 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                requestPermission(MainActivity.this, CAMERA_STORAGE_PERMISSION, REQUEST_CAMERA_STORAGE);
+                                requestPermission(MainActivity.this, PERMISSION_CAMERA_STORAGE, REQUEST_CAMERA_STORAGE);
                             }
                         }).show();
 
             } else {
 
                 // 顯示Android預設視窗 (安裝後第一次使用會跑這裡，使用者如果去關掉這個權限，那會跑上面)
-                requestPermission(MainActivity.this, CAMERA_STORAGE_PERMISSION, REQUEST_CAMERA_STORAGE);
+                requestPermission(MainActivity.this, PERMISSION_CAMERA_STORAGE, REQUEST_CAMERA_STORAGE);
             }
 
         } else {
