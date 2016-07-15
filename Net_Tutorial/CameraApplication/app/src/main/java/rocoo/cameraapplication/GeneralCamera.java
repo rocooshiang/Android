@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,17 +45,17 @@ public class GeneralCamera extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general_camera);
 
-        fullImageView = (ImageView)findViewById(R.id.imageView);
-        thumbnailImageView = (ImageView)findViewById(R.id.imageView2);
-        takePictureButton = (Button)findViewById(R.id.button);
+        fullImageView = (ImageView) findViewById(R.id.imageView);
+        thumbnailImageView = (ImageView) findViewById(R.id.imageView2);
+        takePictureButton = (Button) findViewById(R.id.button);
 
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 //  確認裝置是否有相機
-                if(getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA) == false){
-                    Toast.makeText(GeneralCamera.this,"此裝置沒有相機",Toast.LENGTH_SHORT).show();
+                if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA) == false) {
+                    Toast.makeText(GeneralCamera.this, "此裝置沒有相機", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -98,12 +99,12 @@ public class GeneralCamera extends AppCompatActivity {
 
     }
 
-    private void dispatchTakePictureIntent(){
+    private void dispatchTakePictureIntent() {
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         // Ensure that there's a camera activity to handle the intent
-        if(takePictureIntent.resolveActivity(getPackageManager())!=null){
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
 
             // Create the File where the photo should go.
             // If you don't do this, you may get a crash in some devices.
@@ -145,7 +146,7 @@ public class GeneralCamera extends AppCompatActivity {
 
         // Save a file: path for use with ACTION_VIEW intents
         // file:/storage/emulated/0/Pictures/JPEG_20160629_154946_1992137745.jpg
-        mCurrentPhotoPath =  "file:" + image.getAbsolutePath();
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
 
         return image;
     }
@@ -171,7 +172,7 @@ public class GeneralCamera extends AppCompatActivity {
         int photoH = bmOptions.outHeight;
 
         // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
@@ -181,13 +182,14 @@ public class GeneralCamera extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
 
         imageView.setImageBitmap(bitmap);
+
     }
 
     private void checkPermission() {
 
         // 判斷所有權限是否都被允許
         if (ActivityCompat.checkSelfPermission(this, PERMISSION_CAMERA_STORAGE[0]) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this, PERMISSION_CAMERA_STORAGE[1]) != PackageManager.PERMISSION_GRANTED ) {
+                || ActivityCompat.checkSelfPermission(this, PERMISSION_CAMERA_STORAGE[1]) != PackageManager.PERMISSION_GRANTED) {
 
             /** 沒有權限則顯示視窗告知使用者 **/
 
