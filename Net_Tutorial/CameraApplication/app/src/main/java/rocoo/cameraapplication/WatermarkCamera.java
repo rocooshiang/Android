@@ -9,6 +9,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Point;
+
+
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -27,42 +33,36 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+
+public class WatermarkCamera extends AppCompatActivity implements View.OnClickListener {
 
     // For permissions request
     private final int REQUEST_CAMERA_STORAGE = 1;
     private final String[] PERMISSION_CAMERA_STORAGE = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-
-    private ImageView fullImageView, thumbnailImageView;
-    private Button takePictureButton;
+    private Button cameraButton;
+    private ImageView mImageView;
 
     private final int REQUEST_TAKE_PHOTO = 1;
     private String mCurrentPhotoPath = null;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_watermark_camera);
+        cameraButton = (Button) findViewById(R.id.button2);
+        mImageView = (ImageView) findViewById(R.id.imageView3);
+        cameraButton.setOnClickListener(this);
 
-        fullImageView = (ImageView)findViewById(R.id.imageView);
-        thumbnailImageView = (ImageView)findViewById(R.id.imageView2);
-        takePictureButton = (Button)findViewById(R.id.button);
+    }
 
-        takePictureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //  確認裝置是否有相機
-                if(getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA) == false){
-                    Toast.makeText(MainActivity.this,"此裝置沒有相機",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                checkPermission();
-            }
-        });
-
+    /**
+     * MARK - View.OnClickListener
+     **/
+    @Override
+    public void onClick(View view) {
+        checkPermission();
     }
 
     @Override
@@ -72,11 +72,8 @@ public class MainActivity extends AppCompatActivity {
             addPhotoToGallery();
 
             // Show the full sized image.
-            setFullImageFromFilePath(mCurrentPhotoPath, fullImageView);
-            setFullImageFromFilePath(mCurrentPhotoPath, thumbnailImageView);
-        } else {
-            Toast.makeText(this, "Image Capture Failed", Toast.LENGTH_SHORT)
-                    .show();
+            setFullImageFromFilePath(mCurrentPhotoPath, mImageView);
+
         }
     }
 
@@ -99,12 +96,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void dispatchTakePictureIntent(){
+    private void dispatchTakePictureIntent() {
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         // Ensure that there's a camera activity to handle the intent
-        if(takePictureIntent.resolveActivity(getPackageManager())!=null){
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
 
             // Create the File where the photo should go.
             // If you don't do this, you may get a crash in some devices.
@@ -146,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Save a file: path for use with ACTION_VIEW intents
         // file:/storage/emulated/0/Pictures/JPEG_20160629_154946_1992137745.jpg
-        mCurrentPhotoPath =  "file:" + image.getAbsolutePath();
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
 
         return image;
     }
@@ -172,22 +169,27 @@ public class MainActivity extends AppCompatActivity {
         int photoH = bmOptions.outHeight;
 
         // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
 
-        Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
-        imageView.setImageBitmap(bitmap);
+        Bitmap originalBitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
+        // 浮水印
+        String timeStamp = new SimpleDateFormat("yyyy/MM/dd  HH:mm:ss", Locale.getDefault()).format(new Date());
+        Point point = new Point((originalBitmap.getWidth() * 2) / 3, originalBitmap.getHeight() - 30);
+        Bitmap watermark = watermark(originalBitmap, timeStamp, point, Color.WHITE, 255, 60, true);
+
+        imageView.setImageBitmap(watermark);
     }
 
     private void checkPermission() {
 
         // 判斷所有權限是否都被允許
         if (ActivityCompat.checkSelfPermission(this, PERMISSION_CAMERA_STORAGE[0]) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this, PERMISSION_CAMERA_STORAGE[1]) != PackageManager.PERMISSION_GRANTED ) {
+                || ActivityCompat.checkSelfPermission(this, PERMISSION_CAMERA_STORAGE[1]) != PackageManager.PERMISSION_GRANTED) {
 
             /** 沒有權限則顯示視窗告知使用者 **/
 
@@ -196,20 +198,20 @@ public class MainActivity extends AppCompatActivity {
                     PERMISSION_CAMERA_STORAGE[0]) || ActivityCompat.shouldShowRequestPermissionRationale(this,
                     PERMISSION_CAMERA_STORAGE[1])) {
 
-                new AlertDialog.Builder(MainActivity.this)
+                new AlertDialog.Builder(WatermarkCamera.this)
                         .setTitle("權限通知")
                         .setMessage("1. 掃描QRCode及拍照，需要取得您相機的權限 \n2. 照片儲存至相簿，需要取得您儲存的權限")
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                requestPermission(MainActivity.this, PERMISSION_CAMERA_STORAGE, REQUEST_CAMERA_STORAGE);
+                                requestPermission(WatermarkCamera.this, PERMISSION_CAMERA_STORAGE, REQUEST_CAMERA_STORAGE);
                             }
                         }).show();
 
             } else {
 
                 // 顯示Android預設視窗 (安裝後第一次使用會跑這裡，使用者如果去關掉這個權限，那會跑上面)
-                requestPermission(MainActivity.this, PERMISSION_CAMERA_STORAGE, REQUEST_CAMERA_STORAGE);
+                requestPermission(WatermarkCamera.this, PERMISSION_CAMERA_STORAGE, REQUEST_CAMERA_STORAGE);
             }
 
         } else {
@@ -224,5 +226,25 @@ public class MainActivity extends AppCompatActivity {
 
         ActivityCompat.requestPermissions(activity, permissions, requestFrom);
     }
-}
 
+    private Bitmap watermark(Bitmap bitmap, String watermark, Point location, int color, int alpha, int size, boolean underline) {
+        int w = bitmap.getWidth();
+        int h = bitmap.getHeight();
+        Bitmap result = Bitmap.createBitmap(w, h, bitmap.getConfig());
+
+        Canvas canvas = new Canvas(result);
+        canvas.drawBitmap(bitmap, 0, 0, null);
+
+        Paint paint = new Paint();
+        paint.setColor(color);
+        paint.setAlpha(alpha);
+        paint.setTextSize(size);
+        paint.setAntiAlias(true);
+        paint.setUnderlineText(underline);
+        canvas.drawText(watermark, location.x, location.y, paint);
+
+        return result;
+    }
+
+
+}
