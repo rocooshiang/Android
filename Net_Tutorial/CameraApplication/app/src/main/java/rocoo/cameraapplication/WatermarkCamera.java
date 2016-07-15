@@ -28,10 +28,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.Calendar;
+
 
 
 public class WatermarkCamera extends AppCompatActivity implements View.OnClickListener {
@@ -45,6 +45,9 @@ public class WatermarkCamera extends AppCompatActivity implements View.OnClickLi
 
     private final int REQUEST_TAKE_PHOTO = 1;
     private String mCurrentPhotoPath = null;
+    private String mTakePicturesDate = null;
+
+    private String year, month, day, hour, minute, second;
 
 
     @Override
@@ -129,12 +132,21 @@ public class WatermarkCamera extends AppCompatActivity implements View.OnClickLi
 
     private File createImageFile() throws IOException {
 
+        Calendar calendar = Calendar.getInstance();
+        year = String.valueOf(calendar.get(Calendar.YEAR));
+        month = String.valueOf(calendar.get(Calendar.MONTH) + 1);
+        day = String.valueOf(calendar.get(Calendar.DATE));
+        hour = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
+        minute = String.valueOf(calendar.get(Calendar.MINUTE));
+        second = String.valueOf(calendar.get(Calendar.SECOND));
+
+        mTakePicturesDate = year + month + day + "_" + hour + minute + second;
 
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String imageFileName = "JPEG_" + mTakePicturesDate + "_";
         File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DCIM);
+                Environment.DIRECTORY_PICTURES);
+
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -177,12 +189,15 @@ public class WatermarkCamera extends AppCompatActivity implements View.OnClickLi
         bmOptions.inPurgeable = true;
 
         Bitmap originalBitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
-        // 浮水印
-        String timeStamp = new SimpleDateFormat("yyyy/MM/dd  HH:mm:ss", Locale.getDefault()).format(new Date());
-        Point point = new Point((originalBitmap.getWidth() * 2) / 3, originalBitmap.getHeight() - 30);
-        Bitmap watermark = watermark(originalBitmap, timeStamp, point, Color.WHITE, 255, 60, true);
 
-        imageView.setImageBitmap(watermark);
+        // 浮水印樣式設定
+        String timeStamp = year + "/" + month + "/" + day + "  " + hour + ":" + minute + ":" + second;
+        Point point = new Point((originalBitmap.getWidth() * 2) / 3, originalBitmap.getHeight() - 30);
+        Bitmap watermarkBitmap = watermark(originalBitmap, timeStamp, point, Color.WHITE, 255, 60, true);
+
+        imageView.setImageBitmap(watermarkBitmap);
+        // 將浮水印照片寫入指定路徑
+        saveWatermarkImage(watermarkBitmap);
     }
 
     private void checkPermission() {
@@ -246,5 +261,32 @@ public class WatermarkCamera extends AppCompatActivity implements View.OnClickLi
         return result;
     }
 
+    private void saveWatermarkImage(Bitmap img) {
+        // Create an image file name
+        String imageFileName = "JPEG_" + mTakePicturesDate + ".jpg";
+        String storageDir = Environment.getExternalStorageDirectory() + "/DCIM";
 
+        File myDir = new File(storageDir);
+        myDir.mkdirs();
+
+        File file = new File(myDir, imageFileName);
+
+        if (file.exists()) {
+            file.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            img.compress(Bitmap.CompressFormat.JPEG, 70, out);
+            out.flush();
+            out.close();
+
+            mCurrentPhotoPath = file.getPath();
+            // 將浮水印的圖掃描至Media Play Service
+            addPhotoToGallery();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 }
