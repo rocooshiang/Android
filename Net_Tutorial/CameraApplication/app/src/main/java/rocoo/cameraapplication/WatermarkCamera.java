@@ -15,6 +15,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 
 
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -161,11 +162,22 @@ public class WatermarkCamera extends AppCompatActivity implements View.OnClickLi
     }
 
     private void addPhotoToGallery() {
+        // Method1
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(mCurrentPhotoPath);
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
+
+//        // Method2
+//        MediaScannerConnection.scanFile(this,
+//                new String[] { mCurrentPhotoPath }, null,
+//                new MediaScannerConnection.OnScanCompletedListener() {
+//                    public void onScanCompleted(String path, Uri uri) {
+//                        //now visible in gallery
+//                    }
+//                }
+//        );
     }
 
     private void setFullImageFromFilePath(String imagePath, ImageView imageView) {
