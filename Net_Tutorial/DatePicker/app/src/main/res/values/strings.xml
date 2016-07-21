@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">DatePicker</string>
+    <string name="timeFromFragment"> %1$s : %2$s</string>
+    <string name="dateFromFragment"> %1$s / %2$s / %3$s</string>
+</resources>
