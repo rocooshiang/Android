@@ -61,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 if (Global.isConnected(MainActivity.this)) {
                     try {
-
+                        String result = NetworkingConnectionSoap.fetchDataFromSoap("Taiwan","Tainan");
+                        Log.i(tag, "Soap result data: " + result);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
