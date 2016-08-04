@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      **/
     @Override
     public void onClickFromTime(int hour, int minute) {
+
         timeTextView.setText(getString(R.string.timeFromFragment, hour, minute));
     }
 
@@ -68,4 +69,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClickFromDate(int year, int month, int day) {
         dateTextView.setText(getString(R.string.dateFromFragment, year, month, day));
     }
+
+
 }
