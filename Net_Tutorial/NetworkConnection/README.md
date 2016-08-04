@@ -38,5 +38,5 @@
 <br \>
 ## Reference
 
-* [Global Weather](http://www.webservicex.net/globalweather.asmx)
 * [Ksoap Getting Start](http://simpligility.github.io/ksoap2-android/getting-started)
+* [Global Weather](http://www.webservicex.net/globalweather.asmx)
