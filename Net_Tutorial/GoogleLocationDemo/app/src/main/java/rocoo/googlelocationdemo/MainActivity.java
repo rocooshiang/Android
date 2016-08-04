@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity implements
         ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
 
     private String TAG = "Rocoo";
-    private static int REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static String[] LOCATION_PERMISSION = {Manifest.permission.ACCESS_FINE_LOCATION};
+    private static int REQUEST_LOCATION = 1;
+    private static String[] PERMISSION_LOCATION = {Manifest.permission.ACCESS_FINE_LOCATION};
 
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         mLayout = findViewById(R.id.sample_output);
-
 
         // 建立與GoogleApi的連接設定
         buildGoogleApiClient();
@@ -164,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-        if (requestCode == REQUEST_ACCESS_FINE_LOCATION) {
+        if (requestCode == REQUEST_LOCATION) {
             if (grantResults.length == 1
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // We can now safely use the API we requested access to
@@ -236,12 +235,12 @@ public class MainActivity extends AppCompatActivity implements
                         .setAction("確認", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                PermissionsUtil.requestPermission(MainActivity.this, LOCATION_PERMISSION, REQUEST_ACCESS_FINE_LOCATION);
+                                PermissionsUtil.requestPermission(MainActivity.this, PERMISSION_LOCATION, REQUEST_LOCATION);
                             }
                         }).show();
             } else {
                 // 顯示Android預設視窗 (安裝後第一次使用會跑這裡，使用者如果去關掉這個權限，那會跑上面)
-                PermissionsUtil.requestPermission(MainActivity.this, LOCATION_PERMISSION, REQUEST_ACCESS_FINE_LOCATION);
+                PermissionsUtil.requestPermission(MainActivity.this, PERMISSION_LOCATION, REQUEST_LOCATION);
             }
 
         } else {
